@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  <mapper namespace="dynamic.dao.DynamicQueryDao">
+  
+  	<select id="select1" resultType="hashmap">
+  		SELECT * FROM emp
+  		
+<!--   		<if test="true"> -->
+  		<if test="false"><!-- false면 밑에 구문 실행되지 않음 -->
+  		WHERE deptno = 10
+  		</if>
+  		
+  		ORDER BY empno
+  	</select>
+  
+  
+  
+  	<select id="select2" resultType="hashmap" parameterType="String">
+  		SELECT * FROM emp
+  		WHERE 1=1
+  		<if test='ename != null and !ename.equals("")'> <!-- 안쪽 문자는 큰따옴표"" 바깥쪽은 작은따옴표''를 사용하는게 안전하다 -->
+  			AND ename LIKE '%' || #{ename  } || '%'
+  		</if>
+  		ORDER BY empno
+  	
+  	</select>
+  
+  
+  
+  	<select id="select3" resultType="hashmap" parameterType="Emp">
+  		SELECT * FROM emp
+  		
+  		WHERE 1=0 
+  		<if test="empno != null and empno != 0">
+  			OR empno = #{empno  }
+  		</if>
+  		
+		<if test='ename != null and !ename.equals("")'>
+			OR ename LIKE '%' || #{ename  } || '%'
+		</if>  		
+  		ORDER BY empno
+  	</select>
+  	
+  	
+  	
+  	<select id="select4" resultType="hashmap" parameterType="hashmap">
+  		<!-- SELECT * FROM emp
+  		WHERE 1=1
+  		
+  		<choose>
+  			<when test="category!=null and category.equals('ename')">
+  				AND ename = #{keyword  }
+  			</when>
+  			<when test="category!=null and category.equals('job')">
+  				AND job = #{keyword  }
+  			</when>
+  		</choose>
+  		
+  		<if test="category.equals('ename')">
+  			AND ename = #{keyword  }
+  		</if>
+  		
+  		<if test="category.equals('job')">
+  			AND job = #{keyword  }
+  		</if>
+  		ORDER BY empno -->
+  		
+  		
+  		SELECT * FROM emp
+  		<trim prefix="WHERE" prefixOverrides="AND|OR">
+	  		<choose>
+	  			<when test="category!=null and category.equals('ename')">
+	  				AND ename = #{keyword  }
+	  			</when>
+	  			<when test="category!=null and category.equals('job')">
+	  				AND job = #{keyword  }
+	  			</when>
+	  		</choose>
+  		</trim>
+  	</select>
+  	
+  	
+  	
+  	<select id="selectCheckbox" resultType="hashmap" parameterType="hashmap">
+  		SELECT * FROM emp
+  		<if test="deptnoArr != null">
+  			WHERE deptno IN 
+  				<foreach collection="deptnoArr" item="deptno" open="(" close=")" separator=",">
+  					#{deptno}
+  				</foreach>
+  		</if>
+  		ORDER BY empno
+  		
+  		
+  		<!-- 다른 방식 -->
+<!--   		SELECT * FROM emp
+  		<if test="deptnoArr != null">
+  		
+  			WHERE와 OR은 바로 만나면 오류가 발생하므로 처음 deptno에는 OR을 붙이면 안된다 separator="OR" 을 한다
+  			<foreach collection="deptnoArr" item="deptno" open="WHERE" separator="OR">
+  				deptno = #{deptno}
+  			</foreach>
+  		</if>
+  		ORDER BY empno -->
+  		
+  	</select>
+  	
+  	<select id="selectByEmpno" resultType="hashmap" parameterType="int">
+  		SELECT * FROM emp
+  		WHERE empno = #{empno  }
+  	
+  	</select>
+  	
+  	<update id="update" parameterType="hashmap">
+  		UPDATE emp
+  		
+  		<!-- prefix 접두어, suffix 접미어  -->
+  		<trim prefix="SET" prefixOverrides="," >
+  		
+  			<if test="job != null ans !job.equals('')">
+  				, job = #{job  }
+  			</if>
+  			<if test="sal != null ans !sal.equals('')">
+  				, sal = #{sal  }
+  			</if>
+  			<if test="comm != null ans !comm.equals('')">
+  				, comm = #{comm  }
+  			</if>
+  		
+  		</trim>
+  		
+  		<!-- 위에 설명 prefixOverrides=","하면 밑에서 prefix="SET"과 만나는 ,를 자동으로 지워준다, 지워주지 않으면 SQL문법 오류가 발생한다 -->
+<!--   		SET		, test = 123 -> SET test = 123 -->
+  		WHERE empno = #{empno  }
+  	
+  	
+  	
+  	<!-- suffixOverrides예시 -->
+  		<!-- trim안에서 제일 뒤에 있는 ,를 제거한다  comm = #{comm  }, 컴마 제거 -->
+<!--   		UPDATE emp
+  		<trim prefix="SET" suffixOverrides="," >
+  		
+  			<if test="job != null ans !job.equals('')">
+  				job = #{job  },
+  			</if>
+  			<if test="sal != null ans !sal.equals('')">
+  				sal = #{sal  },
+  			</if>
+  			<if test="comm != null ans !comm.equals('')">
+  				comm = #{comm  },
+  			</if>
+  		
+  		</trim>
+  		WHERE empno = #{empno  } -->
+  	</update>
+  	
+  	
+  </mapper>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  

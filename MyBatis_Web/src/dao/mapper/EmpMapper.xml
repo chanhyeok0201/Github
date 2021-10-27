@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="dao.face.EmpDao">
+
+ 	<resultMap type="dto.Emp" id="Emp">
+  		
+  		<id column="empno" property="empno"/> <!-- column에는 pk, property 에는 멤버필드-->
+  		
+<!--   		<result column="empno" property="empno"/> result로 줘도 상관은 없다 -->
+  		<result column="ename" property="ename"/>
+  		<result column="job" property="job"/>
+  		<result column="mag" property="mag"/>
+  		<result column="hiredate" property="hiredate"/>
+  		<result column="sal" property="sal"/>
+  		<result column="comm" property="comm"/>
+  		<result column="deptno" property="deptno"/>
+  		
+  		<!-- column은 테이블 컬럼 property은 dto맴버필드 지금은 두 값이 똑같아서 같은거임 -->
+  	</resultMap>
+
+	<sql id="selectEmp">
+		SELECT
+			empno, ename, job, mgr
+			, hiredate, sal, comm, deptno
+		FROM emp 
+	</sql>
+
+	<sql id="whereCond">
+		WHERE serch LIKE '%' || #{keyword} || '%'
+	</sql>
+
+	<select resultMap="Emp" id="selectAll">
+<!-- 	<select resultType="dto.Emp" id="selectAll"> -->
+		<include refid="selectEmp" />
+		ORDER BY empno 
+	</select>
+
+	<select resultMap="Emp" id="selectByEmpno" parameterType="Emp">
+<!-- 	<select resultType="dto.Emp" id="selectByEmpno" parameterType="dto.Emp"> -->
+		<include refid="selectEmp" />
+		WHERE empno = #{empno } 
+	</select>
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 	<select id="" parameterType="" timeout="20" statementType="STATEMENT" flushCache="true"></select> -->
+
+<!-- 	<update id="" parameterType="" timeout="30" statementType="STATEMENT" flushCache="true"></update> -->
+
+	<!-- select에만 result이 있다 -->
+<!-- 	<select id="" parameterType="" parameterMap="" resultMap="" resultType=""></select>
+	
+	<update id="" parameterMap="" parameterType=""></update>
+	<delete id="" parameterMap="" parameterType=""></delete>
+	<insert id="" parameterMap="" parameterType=""></insert> -->
+
+
+
+	<!-- sql태그 예시 -->
+	
+<!-- 	<sql id="boardCond">
+			WHERE title LIKE '%' || ${search} || '%'
+				OR content LIKE '%' || ${search} || '%'
+	</sql>
+	
+	<sql id="selectBoard">
+			SELECT * FROM board
+			<include refid="boardCond" />
+	</sql>
+	
+	<select id="selectTotCntBoardList">
+		SELECT count(*) FROM (
+			<include refid="selectBoard" />
+		) CNT
+	</select>
+	
+	<select id="selectBoardList">
+		SELECT * FROM(
+			SELECT rownum rnum, B.*FROM(
+			<include refid="selectBoard" />
+				ORDER BY boardno DESE
+			) B
+		) BOARD
+		WHERE rnum BETWEEN #{startNo  } AND #{endNo  }
+	</select> -->
+
+
+</mapper>
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  <mapper namespace="selectKey.dao.SelectKeyDao">
+  
+  	<!-- @Param -->
+ <!--  	<insert id="insert" parameterType="string">
+  		INSERT INTO test_member (no, id, pw)
+  		VALUES ( test_member_seq.nextval, #{userid}, #{userpw})
+  	</insert>  -->
+  	
+  	<insert parameterType="selectKey.dto.TestMember" id="insert">
+  	
+  		<!-- insert에서 사용할 no키를 만듬 -->
+  		<selectKey order="BEFORE" resultType="int" keyProperty="no"> <!-- BEFORE: INSERT실행 전, AFTER: INSERT실행 후  -->
+  			SELECT test_member_seq.nextval FROM dual
+  		</selectKey>
+  	
+  		INSERT INTO test_member ( no, id, pw )
+  		VALUES ( #{no  }, #{id  }, #{pw  } )
+  		
+  	</insert>
+  
+  
+<!--   	<insert parameterType="selectKey.dto.TestMember" id="insert">
+  	
+  		insert에서 사용할 no키를 만듬
+  		<selectKey order="AFTER" resultType="int" keyProperty="no"> BEFORE: INSERT실행 전, AFTER: INSERT실행 후 
+  			SELECT max(no) FROM test_member
+  		</selectKey>
+  	
+  		INSERT INTO test_member ( no, id, pw )
+  		VALUES ( test_member_seq.nextval, #{id  }, #{pw  } )
+  	</insert> -->
+  
+  
+  
+  
+  
+  
+  </mapper>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
